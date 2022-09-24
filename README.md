@@ -1,7 +1,3 @@
 # tp-arboles-assembly-c
 
-test
-
-test2
-
-test3
+Organizacion del Computador II - UNGS
