@@ -11,7 +11,7 @@ crearArbolB:
     mov edx, [ebp+12] ;guardo en edx el valor del parametro
     mov ebx, [ebp+8] ;puntero al nodo
     CMP ebx, 0 ;si es cero es que no hay nodo
-    JE agregoNodo ;se reserva memoria y se guarda el valor
+    JE agregarNodo ;se reserva memoria y se guarda el valor
     CMP edx, [ebx] ;comparo el valor del parametro con el valor del nodo
     JE fin 
     JG nodo_derecha ;si es mayor se guarda en el nodo derecho
@@ -27,7 +27,7 @@ crearArbolB:
     mov ebx, 0
     mov [eax+4], ebx ;nodo en cero 
     mov [eax+8], ebx ;nodo en cero
-    mov [ebp+4] ;eax
+    mov [ebp+4], eax
     JMP fin
 
     nodo_izq:
@@ -66,7 +66,7 @@ crearArbolB:
     JL nodoIzqEliminar ;si es menor me muevo al nodo izquierdo
     JMP valorNodo ;se encontro el nodo que tiene el valor del parametro
 
-    nodo_izq:
+    nodoIzqEliminar:
     push edx ;valor del parametro
     mov eax, [ebx+4] ;guardo el nodo de la izquierda 
     push eax 
@@ -123,32 +123,32 @@ crearArbolB:
     push ebp ;guardo base point
     mov ebp, esp ;el nuevo base point es lo que esta en stack point
     mov ebx, [ebp +8] ;puntero al nodo
-    mov ecx, [ebp] ;guardo el valor del nodo en ecx
-    CMP ebx, 0
-    JE fin
-    call buscarIzq
-    call buscarDer
+    mov ecx, [ebx] ;guardo el valor del nodo min en ecx
+    CMP ebx, 0  ; Si es cero es que el nodo es null
+    JE fin      ; si es null, termina
+    call buscarIzq   ; nodo izquierda
+    call buscarDer   ; nodo derecha
     
     buscarIzq:
     mov eax, [ebx+4] ;guardo el nodo de la izquierda
     push eax
-    CMP eax, ecx
-    JL cambioMin
+    CMP [eax], ecx  ; comparo que el valor del nodo min con el nodo actual
+    JL cambioMin      ; si es menor, lo cambio
     call buscarMin
     JMP fin
 
     buscarDer:
     mov eax, [ebx+8] ;guardo el nodo de la derecha
     push eax
-    CMP eax, ecx
-    JL cambioMin
+    CMP [eax], ecx ; comparo que el valor del nodo min con el nodo actual
+    JL cambioMin     ; si es menor, lo cambio
     call buscarMin
     JMP fin
 
     cambioMin:
-    mov ecx, [eax]
-    call buscarMin
-    JMP fin
+    mov ebx, eax       ; muevo el nodo actual al nodo min
+    ;call buscarMin
+    JMP fin            ; retorno
 
 ;-------------------------------------------------------------------
 

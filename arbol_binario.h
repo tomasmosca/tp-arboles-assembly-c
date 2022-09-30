@@ -3,9 +3,9 @@
 
 struct arbol_binario
 {
+    int valor;
     struct arbol_binario *izq;
     struct arbol_binario *der;
-    int valor;
 };
 
 #endif
