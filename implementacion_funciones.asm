@@ -120,7 +120,37 @@ crearArbolB:
 ;-------------------------------------------------------------------
 
     buscarMin:
+    push ebp ;guardo base point
+    mov ebp, esp ;el nuevo base point es lo que esta en stack point
+    mov ebx, [ebp +8] ;puntero al nodo
+    mov ecx, [ebp] ;guardo el valor del nodo en ecx
+    CMP ebx, 0
+    JE fin
+    call buscarIzq
+    call buscarDer
+    
+    buscarIzq:
+    mov eax, [ebx+4] ;guardo el nodo de la izquierda
+    push eax
+    CMP eax, ecx
+    JL cambioMin
+    call buscarMin
+    JMP fin
 
+    buscarDer:
+    mov eax, [ebx+8] ;guardo el nodo de la derecha
+    push eax
+    CMP eax, ecx
+    JL cambioMin
+    call buscarMin
+    JMP fin
+
+    cambioMin:
+    mov ecx, [eax]
+    call buscarMin
+    JMP fin
+
+;-------------------------------------------------------------------
 
     fin:
     mov esp, ebp
