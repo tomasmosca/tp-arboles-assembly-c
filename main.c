@@ -16,14 +16,23 @@ int main(int argc, char **argv)
     struct arbol_binario *nodo2;
     struct arbol_binario *nodo3;
     struct arbol_binario *nodo4;
-    struct arbol_binario *nodo5;
-    struct arbol_binario *nodo6;
+    
+    // ARBOLES DE MUESTRA:
+    // se crea un arbol
+    nodo1 = crearHojaArbolB(3);  // creamos hoja con valor 3
+    nodo2 = crearHojaArbolB(8);  // creamos hoja con valor 8
+    raiz = generarArbolB(5, nodo1, nodo2); //generar arbol, se crea nodo raiz con valor 5 y se asignan las hojas anteriores a izquierda y derecha
+
+    // se crea otro arbol
+    nodo3 = crearHojaArbolB(9);
+    nodo4 = crearHojaArbolB(12);
+    raiz2 = generarArbolB(10, nodo3, nodo4);
+
+    // se genera arbol con los otros dos subarboles
+    raiz3 = generarArbolB(7, raiz, raiz2);
 
     /*
-
-        *nodo1 = crearHojaArbolB(8);   // Crear hoja
-        *nodo2 = crearHojaArbolB(3);   // Crear hoja
-        *raiz = generarArbolB(5, *nodo2, *nodo1);    // generar arbol, se crea nodo raiz con valor 5 y se asignan hojas anteriores a izq y der
+        Este es el arbol generado con el codigo de arriba:
 
                         7
                     /       \
@@ -33,21 +42,14 @@ int main(int argc, char **argv)
     
      */
 
-    nodo1 = crearHojaArbolB(3);
-    nodo2 = crearHojaArbolB(8);
-
-    raiz = generarArbolB(5, nodo1, nodo2);
-
-    nodo3 = crearHojaArbolB(9);
-    nodo4 = crearHojaArbolB(12);
-
-    raiz2 = generarArbolB(10, nodo3, nodo4);
-
-    raiz3 = generarArbolB(7, raiz, raiz2);
+    // lo mostramos por consola:
+    // imprimirArbol(raiz3)
 
     printf("Valor : %d\n", raiz3->valor);
     printf("Valor : %d\n", raiz3->izq->valor);
     printf("Valor : %d\n", raiz3->der->valor);
+
+    // eliminarTodos(raiz3, 3)
 
     return 0;
 }

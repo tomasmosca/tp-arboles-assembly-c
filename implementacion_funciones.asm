@@ -12,47 +12,59 @@ section .text
 
     crearHojaArbolB:
 
+        ; prologo de la funcion
         push ebp
         mov ebp, esp
 
+        ; guardo valor pasado por parametro en ebx (lo busco en la pila)
         mov ebx, [ebp + 8]  ; valor
 
+        ; salto a funcion nodoHoja
         jmp nodoHoja
 
     nodoHoja:
+        ; apilo 12 en el stack lo cual sera el tamaño del nodo, luego llamo a malloc y se "desapila" el tamaño pasado
         push 12
         call malloc
         add esp, 4
 
+        ; si eax no cambio, es porque no se reservo la memoria
         cmp eax, 0
         je fin
 
-        mov [eax], ebx
-        mov DWORD[eax + 4], 0
-        mov DWORD[eax + 8], 0
+        ; se crea el nodo hoja
+        mov [eax], ebx          ; valor pasado por parametro
+        mov DWORD[eax + 4], 0   ; nodo izquierda en null
+        mov DWORD[eax + 8], 0   ; nodo derecha en null
 
         jmp fin
 
     generarArbolB:
         
+        ; prologo de la funcion
         push ebp
         mov ebp, esp
 
+        ;guardo los valores pasado por parametro (valor entero, nodo izquierda y nodo derecha)
         mov ebx, [ebp + 8]  ; valor
         mov esi, [ebp + 12] ; izq
         mov edi, [ebp + 16] ; der
 
+        ; salto a la funcion nodoComun la cual es la opuesta a nodoHoja y crea un nodo y se le asigna izquierda y derecha pasados por parametro
         jmp nodoComun
 
     nodoComun:
 
+        ; apilo 12 en el stack lo cual sera el tamaño del nodo, luego llamo a malloc y se "desapila" el tamaño pasado
         push 12
         call malloc
         add esp, 4
 
+        ; si eax no cambio, es porque no se reservo la memoria
         cmp eax, 0
         je fin
 
+        ; se crea el nodo con izquierda y derecha, y valor. los tres fueron pasados por parametro
         mov [eax], ebx           ; valor
         mov DWORD[eax + 4], esi  ; nuevo nodo izq
         mov DWORD[eax + 8], edi  ; nuevo nodo der
@@ -161,6 +173,7 @@ section .text
 ;-------------------------------------------------------------------
 
     fin:
+        ; fin de una funcion, esp vuelve a la posicion de antes (ebp), se desapila ebp y se retorna a la direccion
         mov esp, ebp
         pop ebp
         ret
