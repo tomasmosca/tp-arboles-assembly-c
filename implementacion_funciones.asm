@@ -1,58 +1,66 @@
-global crearArbolB
+global generarArbolB
+global crearHojaArbolB
 global buscarMin
 global eliminarTodos
-extern _malloc
-extern _free
+extern malloc
+extern free
+
+
+CMAIN:
+
 section .text
 
-crearArbolB:
-    push ebp ;guardo base point
-    mov ebp, esp ;el nuevo base point es lo que esta en stack point
-    mov edx, [ebp+12] ;guardo en edx el valor del parametro
-    mov ebx, [ebp+8] ;puntero al nodo
-    CMP ebx, 0 ;si es cero es que no hay nodo
-    JE agregarNodo ;se reserva memoria y se guarda el valor
-    CMP edx, [ebx] ;comparo el valor del parametro con el valor del nodo
-    JE fin 
-    JG nodo_derecha ;si es mayor se guarda en el nodo derecho
-    JMP nodo_izq ;si es menor se guarda en el nodo izquierdo
+    crearHojaArbolB:
 
-    agregarNodo:
-    push edx
-    push 12
-    call _malloc ;asigna un bloque de memoria de bytes
-    add esp, 4
-    pop edx
-    mov [eax], eax ;guardo el valor
-    mov ebx, 0
-    mov [eax+4], ebx ;nodo en cero 
-    mov [eax+8], ebx ;nodo en cero
-    mov [ebp+4], eax
-    JMP fin
+        push ebp
+        mov ebp, esp
 
-    nodo_izq:
-    push edx ;valor del parametro
-    mov eax, [ebx+4] ;guardo el nodo de la izquierda 
-    push eax 
-    call crearArbolB
-    mov ebx, [ebp + 8] ;apunta al nodo actual
-    mov [ebx + 4], eax ;nodo nuevo
-    mov eax, ebx;
-    add esp, 8 ;desapilo lo que apile  
-    JMP fin
+        mov ebx, [ebp + 8]  ; valor
 
-    nodo_derecha:
-    push edx ;valor del parametro
-    mov eax, [ebx+8] ;guardo el nodo de la derecha 
-    push eax 
-    call crearArbolB
-    mov ebx, [ebp + 8] ;apunta al nodo actual
-    mov [ebx + 8], eax ;nodo nuevo
-    mov eax, ebx;
-    add esp, 8 ;desapilo lo que apile  
-    JMP fin
+        jmp nodoHoja
 
-;-------------------------------------------------------------------
+    nodoHoja:
+        push 12
+        call malloc
+        add esp, 4
+
+        cmp eax, 0
+        je fin
+
+        mov [eax], ebx
+        mov DWORD[eax + 4], 0
+        mov DWORD[eax + 8], 0
+
+        jmp fin
+
+    generarArbolB:
+        
+        push ebp
+        mov ebp, esp
+
+        mov ebx, [ebp + 8]  ; valor
+        mov esi, [ebp + 12] ; izq
+        mov edi, [ebp + 16] ; der
+
+        jmp nodoComun
+
+    nodoComun:
+
+        push 12
+        call malloc
+        add esp, 4
+
+        cmp eax, 0
+        je fin
+
+        mov [eax], ebx           ; valor
+        mov DWORD[eax + 4], esi  ; nuevo nodo izq
+        mov DWORD[eax + 8], edi  ; nuevo nodo der
+
+        jmp fin
+
+
+    ;-------------------------------------------------------------------
 
     eliminarTodos:
     push ebp ;guardo base point
@@ -76,7 +84,7 @@ crearArbolB:
     mov eax, ebx;
     add esp, 8 ;desapilo lo que apile  
     JMP fin
-    
+
     nodoDerEliminar:
     push edx ;valor del parametro
     mov eax, [ebx+8] ;guardo el nodo de la derecha 
@@ -113,7 +121,7 @@ crearArbolB:
     add esp, 4 ;desapilo nodo derecho
     pop ebx
     push ebx
-    call _free
+    call free
     add esp, 4 ;desapilo
     JMP fin
 
@@ -128,7 +136,7 @@ crearArbolB:
     JE fin      ; si es null, termina
     call buscarIzq   ; nodo izquierda
     call buscarDer   ; nodo derecha
-    
+
     buscarIzq:
     mov eax, [ebx+4] ;guardo el nodo de la izquierda
     push eax
@@ -153,6 +161,9 @@ crearArbolB:
 ;-------------------------------------------------------------------
 
     fin:
-    mov esp, ebp
-    pop ebp
-    ret
+        mov esp, ebp
+        pop ebp
+        ret
+
+
+    
