@@ -7,6 +7,20 @@ struct arbol_binario *crearHojaArbolB(int valor);
 struct arbol_binario buscarMin(struct arbol_binario *arbol);
 void eliminarTodos(struct arbol_binario *arbol, int valor);
 
+void imprimirArbolPreorden(struct arbol_binario *arbol) {
+    if (arbol == NULL)
+        return;
+ 
+    /* primer print */
+    printf("%d ", arbol->valor);
+ 
+    /* recursion izquierdo */
+    imprimirArbolPreorden(arbol->izq);
+ 
+    /* recursion derecho */
+    imprimirArbolPreorden(arbol->der);
+}
+
 int main(int argc, char **argv)
 {
     struct arbol_binario *raiz;
@@ -16,7 +30,7 @@ int main(int argc, char **argv)
     struct arbol_binario *nodo2;
     struct arbol_binario *nodo3;
     struct arbol_binario *nodo4;
-    
+
     // ARBOLES DE MUESTRA:
     // se crea un arbol
     nodo1 = crearHojaArbolB(3);  // creamos hoja con valor 3
@@ -42,14 +56,11 @@ int main(int argc, char **argv)
     
      */
 
-    // lo mostramos por consola:
-    // imprimirArbol(raiz3)
+    // lo mostramos por consola en forma preorden:
+    imprimirArbolPreorden(raiz3);
+    printf("%s", "\n");
 
-    printf("Valor : %d\n", raiz3->valor);
-    printf("Valor : %d\n", raiz3->izq->valor);
-    printf("Valor : %d\n", raiz3->der->valor);
-
-    // eliminarTodos(raiz3, 3)
+    // eliminarTodos(raiz3, 3);
 
     return 0;
 }
