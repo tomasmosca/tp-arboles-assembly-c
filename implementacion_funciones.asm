@@ -5,7 +5,6 @@ global eliminarTodos
 extern malloc
 extern free
 
-
 CMAIN:
 
 section .text
@@ -222,15 +221,15 @@ section .text
         cmp eax, 0
         je fin              ; si es, fin
 
-        CMP [eax], ecx      ; comparo que el valor del nodo min con el nodo actual
-        JL modifica         ; si es menor, lo cambio
+        CMP [eax], ecx          ; comparo que el valor del nodo min con el nodo actual
+        JL primeraComparacion         ; si es menor, lo cambio
         
         cmp ecx, [eax]      ; misma comparacion, pero al revez para evitar cierto problema
-        jl modifica1
+        jl segundaComparacion
 
         JMP fin             ; retorno
         
-    modifica:
+    primeraComparacion:
         ; se checkea que [eax] no sea mayor a [edx] antes de modificarlo
         mov esi, [edx]
         cmp [eax], esi
@@ -238,7 +237,7 @@ section .text
         mov edx, eax       ; muevo el nodo actual al nodo min (edx)
         jmp fin
     
-    modifica1:
+    segundaComparacion:
         ; se checkea que ecx (nodo actual) no sea mayor a [edx] antes de modificarlo
         cmp ecx, [edx]
         jg fin
