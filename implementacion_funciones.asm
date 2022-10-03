@@ -158,35 +158,93 @@ section .text
 ;-------------------------------------------------------------------
 
     buscarMin:
-        push ebp ;guardo base point
-        mov ebp, esp ;el nuevo base point es lo que esta en stack point
-        mov ebx, [ebp +8] ;puntero al nodo
-        mov ecx, [ebx] ;guardo el valor del nodo min en ecx
-        CMP ebx, 0  ; Si es cero es que el nodo es null
-        JE fin      ; si es null, termina
-        call buscarIzq   ; nodo izquierda
-        call buscarDer   ; nodo derecha
+        ; pongo en edx un nodo temporal (edx sera el que contenga el nodo minimo en todo momento)
+        push ebp
+        mov ebp, esp
+        mov edx, [ebp + 8]
+        mov esp, ebp
+        pop ebp
+    
+    busquedaMin:
+        ; prologo de la funcion (apilo base point, luego base point contendra la direccion de stack point)
+        push ebp 
+        mov ebp, esp 
+
+        ; guardo nodo pasado por parametro en ebx (lo busco en la pila)
+        mov ebx, [ebp +8]
+
+        CMP ebx, 0         ; Si es cero es que el nodo es null
+        JNE buscarIzq      ; si es null, termina y no entra en buscarIzq
+
+        jmp fin
 
     buscarIzq:
-        mov eax, [ebx+4] ;guardo el nodo de la izquierda
-        push eax
-        CMP [eax], ecx  ; comparo que el valor del nodo min con el nodo actual
-        JL cambioMin      ; si es menor, lo cambio
-        call buscarMin
+        ; guardo valor de nodo actual en ecx, lo meto en la pila
+        mov ecx, [ebx]
+        push ebx
+        
+        mov eax, [ebx+4]    ;guardo el nodo de la izquierda
+        push eax            ; apilo el nodo
+
+        call cambioMin      ; en esta funcion se modifica el minimo actual, edx
+        call busquedaMin    ; llamado recursivo
+        add esp, 4          ;desapilo nodo izquierdo
+        pop ebx             ;desapilo , y pongo direccion en ebx
+
+        jmp buscarDer       ; ahora, se busca en nodo derecho
+
         JMP fin
 
     buscarDer:
-        mov eax, [ebx+8] ;guardo el nodo de la derecha
-        push eax
-        CMP [eax], ecx ; comparo que el valor del nodo min con el nodo actual
-        JL cambioMin     ; si es menor, lo cambio
-        call buscarMin
+        ; guardo valor de nodo actual en ecx, lo meto en la pila
+        mov ecx, [ebx]
+        push ebx
+
+        mov eax, [ebx+8]        ;guardo el nodo de la derecha
+        push eax                ; apilo el nodo
+
+        call cambioMin          ; en esta funcion se modifica el minimo actual, edx
+        call busquedaMin        ; llamado recursivo
+        add esp, 4              ;desapilo nodo izquierdo
+        pop ebx                 ;desapilo , y pongo direccion en ebx
+
+        mov eax, edx            ; muevo edx (conteniendo nodo minimo) a eax para devolverlo por la 
+                                ; funcion (EAX es lo que se retorna al finalizar la funcion)
+
         JMP fin
 
     cambioMin:
-        mov ebx, eax       ; muevo el nodo actual al nodo min
-        ;call buscarMin
-        JMP fin            ; retorno
+        ; prologo funcion
+        push ebp
+        mov ebp, esp
+
+        ; checkeo que eax (el nodo) no sea null antes de cambiar los registros
+        cmp eax, 0
+        je fin              ; si es, fin
+
+        CMP [eax], ecx      ; comparo que el valor del nodo min con el nodo actual
+        JL modifica         ; si es menor, lo cambio
+        
+        cmp ecx, [eax]      ; misma comparacion, pero al revez para evitar cierto problema
+        jl modifica1
+
+        JMP fin             ; retorno
+        
+    modifica:
+        ; se checkea que [eax] no sea mayor a [edx] antes de modificarlo
+        mov esi, [edx]
+        cmp [eax], esi
+        jg fin
+        mov edx, eax       ; muevo el nodo actual al nodo min (edx)
+        jmp fin
+    
+    modifica1:
+        ; se checkea que ecx (nodo actual) no sea mayor a [edx] antes de modificarlo
+        cmp ecx, [edx]
+        jg fin
+        
+        mov edx, ebx       ; muevo el nodo actual al nodo min (edx)
+        jmp fin
 
 ;-------------------------------------------------------------------
 
