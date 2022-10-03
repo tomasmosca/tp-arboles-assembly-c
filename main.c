@@ -33,26 +33,26 @@ int main(int argc, char **argv)
 
     // ARBOLES DE MUESTRA:
     // se crea un arbol
-    nodo1 = crearHojaArbolB(3);  // creamos hoja con valor 3
-    nodo2 = crearHojaArbolB(8);  // creamos hoja con valor 8
-    raiz = generarArbolB(5, nodo1, nodo2); //generar arbol, se crea nodo raiz con valor 5 y se asignan las hojas anteriores a izquierda y derecha
-
+    nodo1 = crearHojaArbolB(1);  // creamos hoja con valor 1
+    nodo2 = crearHojaArbolB(6);  // creamos hoja con valor 6
+    raiz = generarArbolB(3, NULL, nodo2); //generar arbol, se crea nodo raiz con valor 3 y se asignan las hojas anteriores a izquierda y derecha
+    
     // se crea otro arbol
     nodo3 = crearHojaArbolB(9);
-    nodo4 = crearHojaArbolB(12);
+    nodo4 = crearHojaArbolB(14);
     raiz2 = generarArbolB(10, nodo3, nodo4);
 
     // se genera arbol con los otros dos subarboles
-    raiz3 = generarArbolB(7, raiz, raiz2);
+    raiz3 = generarArbolB(8, raiz, raiz2);
 
     /*
         Este es el arbol generado con el codigo de arriba:
 
-                        7
+                        8
                     /       \
-                  5           10
+                  3           10
                 /   \        /  \
-               3     8     9     12
+               1     6     9     14
     
      */
 
@@ -60,7 +60,12 @@ int main(int argc, char **argv)
     imprimirArbolPreorden(raiz3);
     printf("%s", "\n");
 
-    // eliminarTodos(raiz3, 3);
+    // elimino el nodo 6 y sus subarboles
+    eliminarTodos(raiz3, 6);
+
+    //muestro arbol con nodo eliminado
+    imprimirArbolPreorden(raiz3);
+    printf("%s", "\n");
 
     return 0;
 }
