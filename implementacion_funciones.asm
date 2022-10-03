@@ -73,7 +73,7 @@ section .text
 
     ;-------------------------------------------------------------------
 
-    ; ---- encontrar el nodo a buscar ----
+   ; ---- encontrar el nodo a buscar ----
 
     eliminarTodos:
         push ebp ;guardo base point
@@ -83,9 +83,9 @@ section .text
         CMP ebx, 0 ;si es cero es que no hay nodo
         JE fin ;se termina porque el nodo no se encuentra en el arbol
 
-        CMP edx, [ebx] ;comparo el valor del parametro con el valor del nodo actual
-        JG nodoDerEliminar ;si es mayor me muevo al nodo derecho
-        JL nodoIzqEliminar ;si es menor me muevo al nodo izquierdo
+        ;CMP edx, [ebx] ;comparo el valor del parametro con el valor del nodo actual
+        call nodoDerEliminar ;si es mayor me muevo al nodo derecho
+        call nodoIzqEliminar ;si es menor me muevo al nodo izquierdo
         JMP valorNodo ;se encontro el nodo que tiene el valor del parametro
 
     nodoIzqEliminar:
@@ -121,16 +121,19 @@ section .text
 
     borrarAB:
 
-        push ebp ;guardo base point
-        mov ebp, esp ;el nuevo base point es lo que esta en stack point
+        ;push ebp ;guardo base point
+        ;mov ebp, esp ;el nuevo base point es lo que esta en stack point
+        ;mov esi, [ebp +8] ;puntero del nodo
+        ;CMP esi, 0 ;comparo para saber si existe nodo
 
-        mov esi, [ebp +8] ;puntero del nodo
-        CMP esi, 0 ;comparo para saber si existe nodo
-        JNE eliminarSubarbol
+        CMP edx, 0 ;testear porque en teoria no era necesario guardar el bp en otro registro(no me acuerdo que registro quedo XD)
+        call eliminarSubarbol
+        ;mov [ebp +4], 0 hay que testear
+        ;mov [ebp +8], 0 hay que testear
 
         jmp fin
 
-    eliminarSubarbol:
+    eliminarSubarbol:;hay que cambiar esi que creo que no es necesario cambiar el registro
         push esi ;guardo el nodo actual
         mov ecx, [esi +4] ;nodo izq --> eax
         push ecx
@@ -153,6 +156,7 @@ section .text
         mov esi, 0
         
         JMP fin
+
 
 ;-------------------------------------------------------------------
 
